@@ -1,22 +1,90 @@
-<div class="tradingview-widget-container">
-  <div class="tradingview-widget-container__widget"></div>
-  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
-  {
-    "symbolsGroups": [
-      {
-        "name": "주요 경제 지표",
-        "symbols": [
-          { "proName": "FX_IDC:USDKRW", "title": "원/달러 환율" },
-          { "proName": "FRED:GDP", "title": "미국 GDP" },
-          { "proName": "FRED:CPIAUCSL", "title": "미국 소비자물가지수" }
-        ]
-      }
-    ],
-    "width": "100%",
-    "height": 400,
-    "showSymbolLogo": true,
-    "colorTheme": "light"
-  }
-  </script>
-</div>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Economic Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .chart-card { min-height: 200px; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <header class="bg-slate-800 text-white py-10 px-6 text-center shadow-lg">
+        <h1 class="text-4xl font-bold mb-2">글로벌 경제 대시보드</h1>
+        <p class="text-slate-300">실시간 주요 경제 지표 (증시, 금리, 환율, 원자재)</p>
+    </header>
+
+    <main class="container mx-auto py-10 px-4">
+        <div id="dashboard" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            </div>
+    </main>
+
+    <footer class="text-center py-10 text-gray-500 text-sm">
+        <p>Data provided by TradingView & FRED | Built with GitHub Pages</p>
+    </footer>
+
+    <script>
+        const symbols = [
+            // 미국 시장
+            { sym: "NASDAQ:IXIC", name: "나스닥 100" },
+            { sym: "SPAZ:SPX", name: "S&P 500" },
+            { sym: "DJ:DJI", name: "다우 존스" },
+            { sym: "TVC:US10Y", name: "미국 10년물 금리" },
+            { sym: "TVC:US02Y", name: "미국 2년물 금리" },
+            
+            // 한국 시장
+            { sym: "KRX:KOSPI", name: "KOSPI" },
+            { sym: "KRX:KOSDAQ", name: "KOSDAQ" },
+            { sym: "ECONOMICS:KRINTR", name: "한국 기준금리" },
+            { sym: "TVC:KR03Y", name: "한국 3년물 금리" },
+            { sym: "FX_IDC:USDKRW", name: "원/달러 환율" },
+
+            // 환율 및 달러
+            { sym: "CAPITALCOM:DXY", name: "달러 인덱스" },
+            { sym: "FX:USDJPY", name: "엔/달러 환율" },
+            { sym: "FX:EURUSD", name: "유로/달러 환율" },
+            { sym: "FX:USDCNH", name: "위안/달러 환율" },
+            { sym: "BITSTAMP:BTCUSD", name: "비트코인(USD)" },
+
+            // 원자재 및 에너지
+            { sym: "OANDA:XAUUSD", name: "금 (Gold)" },
+            { sym: "OANDA:XAGUSD", name: "은 (Silver)" },
+            { sym: "NYMEX:CL1!", name: "WTI 원유" },
+            { sym: "ICEORB:BZ1!", name: "브렌트유" },
+            { sym: "COMEX:HG1!", name: "구리 선물" }
+        ];
+
+        const container = document.getElementById('dashboard');
+
+        symbols.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'chart-card';
+            
+            // TradingView 미니 차트 설정
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js';
+            script.async = true;
+            script.innerHTML = JSON.stringify({
+                "symbol": item.sym,
+                "width": "100%",
+                "height": "210",
+                "locale": "ko",
+                "dateRange": "1M",
+                "colorTheme": "light",
+                "trendLineColor": "rgba(41, 98, 255, 1)",
+                "underLineColor": "rgba(41, 98, 255, 0.3)",
+                "isReadOnly": false,
+                "autosize": true
+            });
+
+            card.appendChild(script);
+            container.appendChild(card);
+        });
+    </script>
+</body>
+</html>
+
 
